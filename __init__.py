@@ -240,6 +240,65 @@ class MS_Init_ImportProcess():
                             nodes.get(parentName).inputs[2], texNode.outputs[0])
 
                 # Create the normal map setup for Redshift.
+                if "specular" in maps_:
+
+                    texNode = nodes.new(image_node)
+
+                    imgPath = [item[2]
+                               for item in self.textureList if item[1] == "specular"]
+                    if len(imgPath) >= 1:
+                        imgPath = imgPath[0].replace("\\", "/")
+
+                        y_exp += -320
+                        texNode.location = (-720, y_exp)
+
+                        texNode.image = bpy.data.images.load(imgPath)
+                        texNode.show_texture = True
+                        texNode.image.colorspace_settings.name = colorSpaces[1]
+
+                        mat.node_tree.links.new(
+                            nodes.get(parentName).inputs['Specular'], texNode.outputs[0])
+
+                # Create the normal map setup for Redshift.
+                if "displacement" in maps_:
+
+                    texNode = nodes.new(image_node)
+
+                    imgPath = [item[2]
+                               for item in self.textureList if item[1] == "displacement"]
+                    if len(imgPath) >= 1:
+                        imgPath = imgPath[0].replace("\\", "/")
+
+                        y_exp += -320
+                        texNode.location = (-720, y_exp)
+
+                        texNode.image = bpy.data.images.load(imgPath)
+                        texNode.show_texture = True
+                        texNode.image.colorspace_settings.name = colorSpaces[1]
+
+                        mat.node_tree.links.new(
+                            nodes.get(parentName).inputs['Displacement'], texNode.outputs[0])
+
+                # Create the normal map setup for Redshift.
+                if "bump" in maps_:
+
+                    texNode = nodes.new(image_node)
+
+                    imgPath = [item[2]
+                               for item in self.textureList if item[1] == "bump"]
+                    if len(imgPath) >= 1:
+                        imgPath = imgPath[0].replace("\\", "/")
+
+                        y_exp += -320
+                        texNode.location = (-720, y_exp)
+
+                        texNode.image = bpy.data.images.load(imgPath)
+                        texNode.show_texture = True
+                        texNode.image.colorspace_settings.name = colorSpaces[1]
+
+                        mat.node_tree.links.new(
+                            nodes.get(parentName).inputs['Bump'], texNode.outputs[0])
+
                 if "normal" in maps_:
 
                     texNode = nodes.new(image_node)
@@ -249,7 +308,8 @@ class MS_Init_ImportProcess():
                     if len(imgPath) >= 1:
                         imgPath = imgPath[0].replace("\\", "/")
 
-                        texNode.location = (-720*1.5, y_exp)
+                        y_exp += -320
+                        texNode.location = (-720, y_exp)
 
                         texNode.image = bpy.data.images.load(imgPath)
                         texNode.show_texture = True
@@ -257,26 +317,27 @@ class MS_Init_ImportProcess():
 
                         mat.node_tree.links.new(
                             nodes.get(parentName).inputs[29], texNode.outputs[0])
-                
-                                # Create the opacity setup
+
+                        # Create the opacity setup
                 if "opacity" in maps_:
 
-                    imgPath = [item[2] for item in self.textureList if item[1] == "opacity"]
+                    imgPath = [item[2]
+                               for item in self.textureList if item[1] == "opacity"]
                     if len(imgPath) >= 1:
                         imgPath = imgPath[0].replace("\\", "/")
 
                         texNode = nodes.new(image_node)
                         y_exp += -320
-                        texNode.location = (256, 0)
+                        texNode.location = (-720, y_exp)
                         texNode.image = bpy.data.images.load(imgPath)
                         texNode.show_texture = True
                         texNode.image.colorspace_settings.name = colorSpaces[1]
 
-                        mat.node_tree.links.new(nodes.get(parentName).inputs[25], texNode.outputs[0])
+                        mat.node_tree.links.new(
+                            nodes.get(parentName).inputs[25], texNode.outputs[0])
 
                         mat.blend_method = 'CLIP'
                         mat.shadow_method = 'CLIP'
-
 
         except Exception as e:
             print("Megascans LiveLink Error while importing textures/geometry or setting up material. Error: ", str(e))
