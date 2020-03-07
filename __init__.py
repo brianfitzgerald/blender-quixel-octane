@@ -159,8 +159,13 @@ class MS_Init_ImportProcess():
                 parentName = "Principled BSDF"
                 colorSpaces = ["sRGB", "Linear"]
 
-                print(mat.node_tree.keys)
+                print(mat.node_tree.nodes.keys())
                 print(self.octane)
+                print('shlempo')
+
+                for node in mat.node_tree:
+                    print(node.type)
+                    print(node)
 
                 image_node = 'ShaderNodeOctImageTex' if self.octane else 'ShaderNodeTexImage'
 
