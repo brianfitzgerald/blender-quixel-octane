@@ -201,7 +201,7 @@ class MS_Init_ImportProcess():
                         texNode.image.colorspace_settings.name = colorSpaces[0]
 
                         mat.node_tree.links.new(
-                            nodes.get(parentName).inputs[0], texNode.outputs[0])
+                            nodes.get(parentName).inputs[1], texNode.outputs[0])
 
                 # Create the roughness setup.
                 if "roughness" in maps_:
@@ -219,26 +219,7 @@ class MS_Init_ImportProcess():
                         texNode.image.colorspace_settings.name = colorSpaces[1]
 
                         mat.node_tree.links.new(
-                            nodes.get(parentName).inputs[7], texNode.outputs[0])
-
-                # Create the fuzziness setup.
-                if "fuzz" in maps_:
-
-                    imgPath = [item[2]
-                               for item in self.textureList if item[1] == "fuzz"]
-                    if len(imgPath) >= 1:
-                        imgPath = imgPath[0].replace("\\", "/")
-
-                        texNode = nodes.new(image_node)
-                        y_exp += -320
-                        texNode.location = (-720, y_exp)
-                        texNode.image = bpy.data.images.load(imgPath)
-                        texNode.show_texture = True
-                        texNode.image.colorspace_settings.name = colorSpaces[1]
-
-                        mat.node_tree.links.new(
-                            nodes.get(parentName).inputs[10], texNode.outputs[0])
-                        nodes.get(parentName).inputs[11].default_value = 1
+                            nodes.get(parentName).inputs[4], texNode.outputs[0])
 
                 # Create the metalness setup
                 if "metalness" in maps_:
@@ -256,7 +237,7 @@ class MS_Init_ImportProcess():
                         texNode.image.colorspace_settings.name = colorSpaces[1]
 
                         mat.node_tree.links.new(
-                            nodes.get(parentName).inputs[4], texNode.outputs[0])
+                            nodes.get(parentName).inputs[2], texNode.outputs[0])
 
                 # Create the normal map setup for Redshift.
                 if "normal" in maps_:
@@ -275,7 +256,27 @@ class MS_Init_ImportProcess():
                         texNode.image.colorspace_settings.name = colorSpaces[1]
 
                         mat.node_tree.links.new(
-                            nodes.get(parentName).inputs[3], texNode.outputs[0])
+                            nodes.get(parentName).inputs[29], texNode.outputs[0])
+                
+                                # Create the opacity setup
+                if "opacity" in maps_:
+
+                    imgPath = [item[2] for item in self.textureList if item[1] == "opacity"]
+                    if len(imgPath) >= 1:
+                        imgPath = imgPath[0].replace("\\", "/")
+
+                        texNode = nodes.new(image_node)
+                        y_exp += -320
+                        texNode.location = (256, 0)
+                        texNode.image = bpy.data.images.load(imgPath)
+                        texNode.show_texture = True
+                        texNode.image.colorspace_settings.name = colorSpaces[1]
+
+                        mat.node_tree.links.new(nodes.get(parentName).inputs[25], texNode.outputs[0])
+
+                        mat.blend_method = 'CLIP'
+                        mat.shadow_method = 'CLIP'
+
 
         except Exception as e:
             print("Megascans LiveLink Error while importing textures/geometry or setting up material. Error: ", str(e))
