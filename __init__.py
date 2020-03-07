@@ -159,6 +159,11 @@ class MS_Init_ImportProcess():
                 parentName = "Principled BSDF"
                 colorSpaces = ["sRGB", "Linear"]
 
+                print(mat.node_tree.keys)
+                print(self.octane)
+
+                image_node = 'ShaderNodeOctImageTex' if self.octane else 'ShaderNodeTexImage'
+
                 # Metallic value
                 mat.node_tree.nodes[parentName].inputs[4].default_value = 1 if self.isMetal else 0
                 # IOR Value
@@ -174,7 +179,7 @@ class MS_Init_ImportProcess():
                     if len(imgPath) >= 1:
                         imgPath = imgPath[0].replace("\\", "/")
 
-                        texNode = nodes.new('ShaderNodeTexImage')
+                        texNode = nodes.new(image_node)
                         y_exp += -320
                         texNode.location = (-720, y_exp)
                         texNode.image = bpy.data.images.load(imgPath)
@@ -192,7 +197,7 @@ class MS_Init_ImportProcess():
                     if len(imgPath) >= 1:
                         imgPath = imgPath[0].replace("\\", "/")
 
-                        texNode = nodes.new('ShaderNodeTexImage')
+                        texNode = nodes.new(image_node)
                         y_exp += -320
                         texNode.location = (-720, y_exp)
                         texNode.image = bpy.data.images.load(imgPath)
@@ -210,7 +215,7 @@ class MS_Init_ImportProcess():
                     if len(imgPath) >= 1:
                         imgPath = imgPath[0].replace("\\", "/")
 
-                        texNode = nodes.new('ShaderNodeTexImage')
+                        texNode = nodes.new(image_node)
                         y_exp += -320
                         texNode.location = (-720, y_exp)
                         texNode.image = bpy.data.images.load(imgPath)
@@ -229,7 +234,7 @@ class MS_Init_ImportProcess():
                     if len(imgPath) >= 1:
                         imgPath = imgPath[0].replace("\\", "/")
 
-                        texNode = nodes.new('ShaderNodeTexImage')
+                        texNode = nodes.new(image_node)
                         y_exp += -320
                         texNode.location = (-720, y_exp)
                         texNode.image = bpy.data.images.load(imgPath)
@@ -239,70 +244,11 @@ class MS_Init_ImportProcess():
                         mat.node_tree.links.new(
                             nodes.get(parentName).inputs[4], texNode.outputs[0])
 
-                # Create the displacement setup.
-                if "displacement" in maps_:
-
-                    pass
-
-                # Create the translucency setup.
-                if "translucency" in maps_:
-
-                    imgPath = [item[2]
-                               for item in self.textureList if item[1] == "translucency"]
-                    if len(imgPath) >= 1:
-                        imgPath = imgPath[0].replace("\\", "/")
-
-                        texNode = nodes.new('ShaderNodeTexImage')
-                        y_exp += -320
-                        texNode.location = (-720, y_exp)
-                        texNode.image = bpy.data.images.load(imgPath)
-                        texNode.show_texture = True
-                        texNode.image.colorspace_settings.name = colorSpaces[0]
-
-                        mat.node_tree.links.new(
-                            nodes.get(parentName).inputs[3], texNode.outputs[0])
-
-                # Create the opacity setup
-                if "opacity" in maps_:
-
-                    imgPath = [item[2]
-                               for item in self.textureList if item[1] == "opacity"]
-                    if len(imgPath) >= 1:
-                        imgPath = imgPath[0].replace("\\", "/")
-
-                        texNode = nodes.new('ShaderNodeTexImage')
-                        y_exp += -320
-                        texNode.location = (256, 0)
-                        texNode.image = bpy.data.images.load(imgPath)
-                        texNode.show_texture = True
-                        texNode.image.colorspace_settings.name = colorSpaces[1]
-
-                        # mat.node_tree.links.new(nodes.get(parentName).inputs[4], texNode.outputs[0])
-
-                        mixNode = nodes.new('ShaderNodeMixShader')
-                        mixNode.location = (630, 0)
-                        mixNode.inputs[0].default_value = 1
-                        mat.node_tree.links.new(
-                            mixNode.inputs[0], texNode.outputs[0])
-
-                        transpNode = nodes.new('ShaderNodeBsdfTransparent')
-                        transpNode.location = (375, 168)
-                        mat.node_tree.links.new(
-                            mixNode.inputs[1], transpNode.outputs[0])
-
-                        mat.node_tree.links.new(
-                            nodes.get("Principled BSDF").outputs["BSDF"], mixNode.inputs[2])
-                        mat.node_tree.links.new(
-                            nodes.get("Material Output").inputs["Surface"], mixNode.outputs[0])
-
-                        mat.blend_method = 'CLIP'
-                        mat.shadow_method = 'CLIP'
-
                 # Create the normal map setup for Redshift.
                 if "normal" in maps_:
 
                     normalNode = nodes.new('ShaderNodeNormalMap')
-                    texNode = nodes.new('ShaderNodeTexImage')
+                    texNode = nodes.new(image_node)
 
                     imgPath = [item[2]
                                for item in self.textureList if item[1] == "normal"]
