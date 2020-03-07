@@ -50,7 +50,7 @@ class MS_Init_ImportProcess():
 
         print("Initialized import class...")
 
-        self.octane = 'octane' in bpy.context.scene.render.engine
+        self.octane = "octane" in bpy.context.scene.render.engine.lower()
         print(bpy.context.scene.render.engine)
 
         try:
@@ -250,7 +250,6 @@ class MS_Init_ImportProcess():
                 # Create the normal map setup for Redshift.
                 if "normal" in maps_:
 
-                    normalNode = nodes.new('ShaderNodeNormalMap')
                     texNode = nodes.new(image_node)
 
                     imgPath = [item[2]
@@ -264,16 +263,9 @@ class MS_Init_ImportProcess():
                         texNode.show_texture = True
                         texNode.image.colorspace_settings.name = colorSpaces[1]
 
-                        normalNode.location = (-450, y_exp)
+                        mat.node_tree.links.new(
+                            nodes.get(parentName).inputs[3], texNode.outputs[0])
 
-                        mat.node_tree.links.new(
-                            nodes.get(parentName).inputs[19], normalNode.outputs[0])
-                        texNode.image.colorspace_settings.name = colorSpaces[1]
-                        mat.node_tree.links.new(
-                            texNode.outputs[0], normalNode.inputs[1])
-
-                        mat.node_tree.links.new(
-                            texNode.outputs[0], normalNode.inputs[1])
         except Exception as e:
             print("Megascans LiveLink Error while importing textures/geometry or setting up material. Error: ", str(e))
 
