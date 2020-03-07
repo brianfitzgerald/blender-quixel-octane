@@ -150,6 +150,8 @@ class MS_Init_ImportProcess():
                 mat.use_nodes = True
                 nodes = mat.node_tree.nodes
 
+                self.octane = "octane" in bpy.context.scene.render.engine.lower()
+
                 # iterate through all objects
                 for obj in self.selectedObjects:
                     # assign material to obj
@@ -173,6 +175,15 @@ class MS_Init_ImportProcess():
                     mat.node_tree.nodes[parentName].inputs[14].default_value = 1.52
 
                 y_exp = 310
+
+                # Use Universal Material instead of the default diffuse
+                if self.octane:
+                    universal = nodes.new("ShaderNodeOctUniversalMat")
+                    output = nodes.get("Material Output")
+                    nodes.remove(nodes.get(parentName))
+                    parentName = "Universal Material"
+                    mat.node_tree.links.new(
+                        output.inputs[0], nodes.get(parentName).outputs[0])
 
                 # Create the albedo setup.
                 if "albedo" in maps_:
