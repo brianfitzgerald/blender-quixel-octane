@@ -50,7 +50,8 @@ class MS_Init_ImportProcess():
 
         print("Initialized import class...")
 
-        self.octane = 'Octane' in bpy.context.scene.render.engine
+        self.octane = 'octane' in bpy.context.scene.render.engine
+        print(bpy.context.scene.render.engine)
 
         try:
             # Check if there's any incoming data
@@ -156,23 +157,20 @@ class MS_Init_ImportProcess():
 
                 # Get a list of all available texture maps. item[1] returns the map type (albedo, normal, etc...).
                 maps_ = [item[1] for item in self.textureList]
-                parentName = "Principled BSDF"
+                parentName = "Principled BSDF" if not self.octane else 'Diffuse Material'
                 colorSpaces = ["sRGB", "Linear"]
 
                 print(mat.node_tree.nodes.keys())
                 print(self.octane)
-                print('shlempo')
-
-                for node in mat.node_tree:
-                    print(node.type)
-                    print(node)
+                print('blempo')
 
                 image_node = 'ShaderNodeOctImageTex' if self.octane else 'ShaderNodeTexImage'
 
-                # Metallic value
-                mat.node_tree.nodes[parentName].inputs[4].default_value = 1 if self.isMetal else 0
-                # IOR Value
-                mat.node_tree.nodes[parentName].inputs[14].default_value = 1.52
+                if not self.octane:
+                    # Metallic value
+                    mat.node_tree.nodes[parentName].inputs[4].default_value = 1 if self.isMetal else 0
+                    # IOR Value
+                    mat.node_tree.nodes[parentName].inputs[14].default_value = 1.52
 
                 y_exp = 310
 
